@@ -8,7 +8,7 @@ const props = defineProps({
   isInWishlist: Boolean
 })
 
-const emit = defineEmits(['toggle-wishlist'])
+const emit = defineEmits(['toggle-wishlist', 'add-to-cart'])
 </script>
 
 <template>
@@ -34,16 +34,16 @@ const emit = defineEmits(['toggle-wishlist'])
         <Button
           v-if="isInWishlist"
           icon="pi pi-heart-fill"
-          @click="emit('toggle-wishlist', product.id)"
+          @click="emit('toggle-wishlist', product)"
         />
         <Button
           v-else
-          @click="emit('toggle-wishlist', product.id)"
+          @click="emit('toggle-wishlist', product)"
           icon="pi pi-heart"
           severity="secondary"
           outlined
         />
-        <Button icon="pi pi-shopping-cart" class="ml-2" />
+        <Button icon="pi pi-shopping-cart" class="ml-2" @click="emit('add-to-cart', product)" />
       </span>
     </div>
   </div>

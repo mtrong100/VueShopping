@@ -1,7 +1,9 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import { useProductStore } from '@/store/useProductStore'
-const store = useProductStore()
+import { useWishlistStore } from '@/store/wishlist'
+import { useCartStore } from '@/store/cart'
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
 </script>
 
 <template>
@@ -16,10 +18,18 @@ const store = useProductStore()
 
       <div class="flex items-center gap-6">
         <RouterLink class="text-gray-800 font-semibold" to="/wishlist">
-          <i v-badge.danger="store.wishlist.length" class="pi pi-heart" style="font-size: 25px"></i>
+          <i
+            v-badge.danger="wishlistStore.wishlist.length"
+            class="pi pi-heart"
+            style="font-size: 25px"
+          ></i>
         </RouterLink>
         <RouterLink class="text-gray-800 font-semibold" to="/cart">
-          <i v-badge.danger="2" class="pi pi-shopping-cart" style="font-size: 25px"></i>
+          <i
+            v-badge.danger="cartStore.cart.length"
+            class="pi pi-shopping-cart"
+            style="font-size: 25px"
+          ></i>
         </RouterLink>
       </div>
     </div>

@@ -7,8 +7,7 @@ export const useProductStore = defineStore('product', {
     selectedCategory: null,
     query: '',
     loadingProducts: false,
-    loadingCategories: false,
-    wishlist: JSON.parse(localStorage.getItem('wishlist')) || []
+    loadingCategories: false
   }),
   actions: {
     async fetchProducts({ category, query } = {}) {
@@ -53,22 +52,6 @@ export const useProductStore = defineStore('product', {
     },
     startSearch() {
       this.fetchProducts({ query: this.query })
-    },
-    toggleWishlist(productId) {
-      const productIndex = this.products.findIndex((product) => product.id === productId)
-      const productItem = this.products[productIndex]
-      const isExisted = this.wishlist.some((item) => item.id === productItem.id)
-
-      if (!isExisted) {
-        this.wishlist.push(productItem)
-      } else {
-        this.wishlist = this.wishlist.filter((item) => item.id !== productItem.id)
-      }
-
-      localStorage.setItem('wishlist', JSON.stringify(this.wishlist))
-    },
-    isProductInWishlist(productId) {
-      return this.wishlist.some((item) => item.id === productId)
     },
     resetFilter() {
       this.selectedCategory = null

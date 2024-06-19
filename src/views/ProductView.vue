@@ -6,32 +6,47 @@ import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import ProductCard from '../components/ProductCard.vue'
 import Toast from 'primevue/toast'
-import { useProductStore } from '@/store/useProductStore'
+import { useProductStore } from '@/store/product'
+import { useWishlistStore } from '@/store/wishlist'
 import Button from 'primevue/button'
+import { useCartStore } from '@/store/cart'
+import { useToast } from 'primevue/usetoast'
 
-const store = useProductStore()
+const toast = useToast()
+const productStore = useProductStore()
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
+
+const addProductToCart = (product) => {
+  cartStore.addToCart(product)
+  toast.add({
+    severity: 'success',
+    summary: 'Product added to cart',
+    life: 1500
+  })
+}
 
 const startSearch = () => {
-  store.startSearch()
+  productStore.startSearch()
 }
 
-const toggleWishlist = (productId) => {
-  store.toggleWishlist(productId)
+const toggleWishlist = (productItem) => {
+  wishlistStore.toggleFavorite(productItem)
 }
 
-const isProductInWishlist = (productId) => {
-  return store.isProductInWishlist(productId)
+const isFavoriteProduct = (productId) => {
+  return wishlistStore.isFavoriteProduct(productId)
 }
 
 onMounted(() => {
-  store.fetchProducts()
-  store.fetchCategories()
+  productStore.fetchProducts()
+  productStore.fetchCategories()
 })
 
 watch(
-  () => store.selectedCategory,
+  () => productStore.selectedCategory,
   (newVal) => {
-    store.fetchProducts({ category: newVal })
+    productStore.fetchProducts({ category: newVal })
   }
 )
 </script>
@@ -47,11 +62,11 @@ watch(
             <h3>Sort by category</h3>
 
             <div class="list-none mt-4 space-y-3">
-              <p>{{ store.loadingCategories ? 'Loading categories...' : '' }}</p>
+              <p>{{ productStore.loadingCategories ? 'Loading categories...' : '' }}</p>
 
-              <div v-for="category in store.categories" :key="category">
+              <div v-for="category in productStore.categories" :key="category">
                 <RadioButton
-                  v-model="store.selectedCategory"
+                  v-model="productStore.selectedCategory"
                   :name="category"
                   :value="category"
                   :inputId="category"
@@ -62,7 +77,7 @@ watch(
           </div>
 
           <Button
-            @click="store.resetFilter"
+            @click="productStore.resetFilter"
             class="w-full"
             label="Reset filter"
             severity="contrast"
@@ -73,26 +88,30 @@ watch(
           <IconField iconPosition="left">
             <InputIcon class="pi pi-search"></InputIcon>
             <InputText
-              v-model="store.query"
+              v-model="productStore.query"
               placeholder="Search for products..."
               class="w-full"
               @change="startSearch"
             />
           </IconField>
 
-          <p class="text-center my-5" v-if="!store.loadingProducts && store.products.length === 0">
+          <p
+            class="text-center my-5"
+            v-if="!productStore.loadingProducts && productStore.products.length === 0"
+          >
             Products not found...
           </p>
 
-          <p v-if="store.loadingProducts" class="text-center my-5">Loading products...</p>
+          <p v-if="productStore.loadingProducts" class="text-center my-5">Loading products...</p>
 
           <div v-else class="mt-5 grid grid-cols-3 gap-3">
             <ProductCard
-              v-for="product in store.products"
+              v-for="product in productStore.products"
               :key="product.id"
               :product="product"
-              :isInWishlist="isProductInWishlist(product.id)"
+              :isInWishlist="isFavoriteProduct(product.id)"
               @toggle-wishlist="toggleWishlist"
+              @add-to-cart="addProductToCart"
             />
           </div>
         </div>

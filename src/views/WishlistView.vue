@@ -1,45 +1,26 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
+import { useWishlistStore } from '@/store/wishlist'
+import { formatCurrency } from '@/helper'
+import { useCartStore } from '@/store/cart'
 
-const wishlist = ref([])
+const wishlistStore = useWishlistStore()
+const cartStore = useCartStore()
 
-const formatCurrency = (value) => {
-  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+const onMoveToCart = (product) => {
+  cartStore.addToCart(product)
+  wishlistStore.removeProduct(product.id)
 }
 
-const removeFromWishlist = (product) => {
-  wishlist.value = wishlist.value.filter((item) => item.id !== product.id)
-}
-
-const moveToCart = (product) => {
-  wishlist.value = wishlist.value.filter((item) => item.id !== product.id)
-  const saveCart = JSON.parse(localStorage.getItem('cart')) || []
-
-  if (!saveCart.some((item) => item.id === product.id)) {
-    saveCart.push(product)
-  } else {
-    saveCart.forEach((item) => {
-      if (item.id === product.id) {
-        item.quantity += 1
-      }
-    })
-  }
-
-  localStorage.setItem('cart', JSON.stringify(saveCart))
+const onRemoveProduct = (productId) => {
+  wishlistStore.removeProduct(productId)
 }
 
 onMounted(() => {
-  const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || []
-  if (savedWishlist) {
-    wishlist.value = savedWishlist
-  }
-})
-
-watch(wishlist, (newWishlist) => {
-  localStorage.setItem('wishlist', JSON.stringify(newWishlist))
+  wishlistStore.fetchWishlist()
 })
 </script>
 
@@ -49,7 +30,12 @@ watch(wishlist, (newWishlist) => {
       <h1>My wishlist</h1>
 
       <div class="mt-5">
-        <DataTable :value="wishlist" tableStyle="min-width: 50rem" stripedRows showGridlines>
+        <DataTable
+          :value="wishlistStore.wishlist"
+          tableStyle="min-width: 50rem"
+          stripedRows
+          showGridlines
+        >
           <Column field="id" header="ID" sortable></Column>
           <Column header="Image">
             <template #body="slotProps">
@@ -74,14 +60,14 @@ watch(wishlist, (newWishlist) => {
                 outlined
                 rounded
                 class="mr-2"
-                @click="moveToCart(slotProps.data)"
+                @click="onMoveToCart(slotProps.data)"
               />
               <Button
                 icon="pi pi-trash"
                 outlined
                 rounded
                 severity="danger"
-                @click="removeFromWishlist(slotProps.data)"
+                @click="onRemoveProduct(slotProps.data.id)"
               />
             </template>
           </Column>
