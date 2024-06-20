@@ -1,16 +1,49 @@
 <script setup>
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 import Image from 'primevue/image'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
-import Carousel from 'primevue/carousel'
 import ProgressSpinner from 'primevue/progressspinner'
+import { useCartStore } from '@/store/cart'
+import { useToast } from 'primevue/usetoast'
+import Toast from 'primevue/toast'
+import { useWishlistStore } from '@/store/wishlist'
+import RelatedProduct from '@/components/RelatedProduct.vue'
 
+const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const product = ref(null)
 const relatedProducts = ref([])
 const route = useRoute()
 const loadingProduct = ref(false)
+const toast = useToast()
+const quantity = ref(1)
+
+const onIncreaseQuantity = () => {
+  quantity.value++
+}
+
+const onDecreaseQuantity = () => {
+  if (quantity.value > 1) quantity.value--
+}
+
+const addProductToCart = (product) => {
+  cartStore.addProductWithQuantity(product, quantity.value)
+  toast.add({
+    severity: 'success',
+    summary: 'Product added to cart',
+    life: 1500
+  })
+}
+
+const toggleWishlist = (productItem) => {
+  wishlistStore.toggleFavorite(productItem)
+}
+
+const isFavoriteProduct = (productId) => {
+  return wishlistStore.isFavoriteProduct(productId)
+}
 
 const fetchProduct = async () => {
   loadingProduct.value = true
@@ -55,7 +88,11 @@ watch(route, (newRoute) => {
 <template>
   <div class="my-10">
     <div class="page-container">
-      <ProgressSpinner v-if="loadingProduct" class="my-20 flex items-center justify-center" />
+      <Toast />
+
+      <div v-if="loadingProduct" class="my-20 flex items-center justify-center">
+        <ProgressSpinner />
+      </div>
 
       <!-- Product detail -->
       <section v-else>
@@ -66,10 +103,10 @@ watch(route, (newRoute) => {
             preview
             width="400"
             height="400"
-            class="mx-auto"
+            class="mx-auto object-contain"
           />
 
-          <div>
+          <div class="space-y-5">
             <Tag :value="product?.category" class="capitalize" />
             <h2>{{ product?.title }}</h2>
             <p>{{ product?.description }}</p>
@@ -82,16 +119,27 @@ watch(route, (newRoute) => {
                 class="h-[50px] rounded-md w-[180px] grid grid-cols-3 items-center place-items-center"
                 style="border: 1px solid #dee2e6"
               >
-                <div class="cursor-pointer">
-                  <i class="pi pi-plus"></i>
-                </div>
-                <div class="font-semibold text-xl">1</div>
-                <div class="cursor-pointer">
+                <div @click="onDecreaseQuantity" class="cursor-pointer">
                   <i class="pi pi-minus"></i>
+                </div>
+                <div class="font-semibold text-xl">{{ quantity }}</div>
+                <div @click="onIncreaseQuantity" class="cursor-pointer">
+                  <i class="pi pi-plus"></i>
                 </div>
               </div>
 
-              <Button icon="pi pi-heart" severity="secondary" outlined size="large" />
+              <Button
+                v-if="isFavoriteProduct(product?.id)"
+                icon="pi pi-heart-fill"
+                @click="toggleWishlist(product)"
+              />
+              <Button
+                v-else
+                icon="pi pi-heart"
+                severity="secondary"
+                outlined
+                @click="toggleWishlist(product)"
+              />
             </div>
 
             <!-- Add to cart -->
@@ -101,47 +149,14 @@ watch(route, (newRoute) => {
               label="Add to cart"
               icon="pi pi-cart-plus"
               raised
+              @click="addProductToCart(product)"
             />
           </div>
         </div>
 
         <!-- Related products -->
         <div class="mt-28">
-          <div class="card">
-            <Carousel :value="relatedProducts" :numVisible="3" :numScroll="1">
-              <template #item="slotProps">
-                <div class="border-1 surface-border border-round m-2 p-3">
-                  <RouterLink class="text-gray-800" :to="`/product/${slotProps.data?.id}`">
-                    <div class="mb-3">
-                      <div class="relative mx-auto">
-                        <img
-                          :src="slotProps.data?.image"
-                          :alt="slotProps.data?.name"
-                          class="w-[240px] h-[240px] object-contain border-round"
-                        />
-                        <Tag
-                          :value="slotProps.data?.category"
-                          class="absolute capitalize"
-                          style="left: 5px; top: 5px"
-                        />
-                      </div>
-                    </div>
-                  </RouterLink>
-
-                  <div class="mb-3 font-medium min-h-[43px] line-clamp-2">
-                    {{ slotProps.data?.title }}
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <div class="mt-0 font-semibold text-xl">${{ slotProps.data?.price }}</div>
-                    <span>
-                      <Button icon="pi pi-heart" severity="secondary" outlined />
-                      <Button icon="pi pi-shopping-cart" class="ml-2" />
-                    </span>
-                  </div>
-                </div>
-              </template>
-            </Carousel>
-          </div>
+          <RelatedProduct :relatedProducts="relatedProducts" />
         </div>
       </section>
     </div>

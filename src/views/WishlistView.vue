@@ -53,7 +53,7 @@ onMounted(() => {
               {{ formatCurrency(slotProps.data.price) }}
             </template>
           </Column>
-          <Column header="Action" :exportable="false" style="min-width: 8rem">
+          <Column header="Action" :exportable="false" style="min-width: 8rem; text-align: center">
             <template #body="slotProps">
               <Button
                 icon="pi pi-shopping-cart"

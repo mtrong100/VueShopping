@@ -33,6 +33,17 @@ export const useCartStore = defineStore('cart', {
 
       localStorage.setItem('VUE_CART', JSON.stringify(this.cart))
     },
+    addProductWithQuantity(product, quantity) {
+      const productIndex = this.cart.findIndex((item) => item.id === product.id)
+
+      if (productIndex > -1) {
+        this.cart[productIndex].quantity += quantity
+      } else {
+        this.cart.push({ ...product, quantity })
+      }
+
+      localStorage.setItem('VUE_CART', JSON.stringify(this.cart))
+    },
     removeFromCart(productId) {
       const productIndex = this.cart.findIndex((item) => item.id === productId)
       if (productIndex > -1) {
