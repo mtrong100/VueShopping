@@ -2,8 +2,25 @@ import { defineStore } from 'pinia'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
-    cart: JSON.parse(localStorage.getItem('VUE_CART')) || []
+    cart: JSON.parse(localStorage.getItem('VUE_CART')) || [],
+    selectedProduct: [],
+    selectedCoupon: null,
+    selectedShippingMethod: null
   }),
+  getters: {
+    subTotal: (state) => {
+      return state.selectedProduct.reduce((acc, product) => {
+        return acc + product.price * product.quantity
+      }, 0)
+    },
+    total: (state) => {
+      const shippingCost = state.selectedShippingMethod ? state.selectedShippingMethod.cost : 0
+      const couponDiscount = state.selectedCoupon
+        ? (state.subTotal * state.selectedCoupon.discountValue) / 100
+        : 0
+      return state.subTotal + shippingCost - couponDiscount
+    }
+  },
   actions: {
     addToCart(product) {
       const productIndex = this.cart.findIndex((item) => item.id === product.id)
@@ -47,6 +64,16 @@ export const useCartStore = defineStore('cart', {
     },
     fetchCart() {
       this.cart = JSON.parse(localStorage.getItem('VUE_CART')) || []
+    },
+    updateCart(products) {
+      products.forEach((product) => {
+        const productIndex = this.cart.findIndex((item) => item.id === product.id)
+        if (productIndex > -1) {
+          this.cart.splice(productIndex, 1)
+        }
+      })
+
+      localStorage.setItem('VUE_CART', JSON.stringify(this.cart))
     }
   }
 })

@@ -15,7 +15,7 @@ const emit = defineEmits(['toggle-wishlist', 'add-to-cart'])
   <div class="p-3 rounded-sm" style="border: 1px solid #dee2e6">
     <RouterLink class="text-gray-800" :to="`/product/${product.id}`">
       <div class="mb-3">
-        <div class="relative mx-auto">
+        <div class="relative flex items-center justify-center">
           <img
             :src="product.image"
             :alt="product.name"

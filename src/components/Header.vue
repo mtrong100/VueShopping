@@ -7,7 +7,7 @@ const cartStore = useCartStore()
 </script>
 
 <template>
-  <header class="bg-slate-50 shadow-sm">
+  <header class="bg-slate-50 shadow-sm p-5">
     <div class="page-container flex items-center justify-between">
       <h2>Shopping</h2>
 
