@@ -14,6 +14,7 @@ const cartStore = useCartStore()
       <div class="flex items-center gap-5">
         <RouterLink class="text-gray-800 font-semibold" to="/">Home</RouterLink>
         <RouterLink class="text-gray-800 font-semibold" to="/product">Products</RouterLink>
+        <RouterLink class="text-gray-800 font-semibold" to="/myorder">My Orders</RouterLink>
       </div>
 
       <div class="flex items-center gap-6">

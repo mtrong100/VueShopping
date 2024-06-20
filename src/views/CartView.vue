@@ -10,8 +10,11 @@ import { SHIPPING_METHODS, COUPON_CODES } from '../constant.js'
 import Dropdown from 'primevue/dropdown'
 import Divider from 'primevue/divider'
 import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
+import Toast from 'primevue/toast'
 
 const router = useRouter()
+const toast = useToast()
 const cartStore = useCartStore()
 
 const onRemoveProduct = (productId) => {
@@ -27,6 +30,24 @@ const onDecrease = (productId) => {
 }
 
 const moveToCheckout = () => {
+  if (cartStore.selectedProduct.length === 0) {
+    toast.add({
+      severity: 'error',
+      summary: 'Please select some products',
+      life: 1500
+    })
+    return
+  }
+
+  if (!cartStore.selectedShippingMethod) {
+    toast.add({
+      severity: 'error',
+      summary: 'Please select shipping method',
+      life: 1500
+    })
+    return
+  }
+
   const body = {
     products: cartStore.selectedProduct,
     coupon: cartStore.selectedCoupon,
@@ -49,6 +70,7 @@ onMounted(() => {
   <div class="my-10">
     <div class="page-container">
       <h1>My cart</h1>
+      <Toast />
 
       <section class="mt-5 grid grid-cols-[minmax(0,1fr),_300px] gap-5 items-start">
         <!-- Cart table -->

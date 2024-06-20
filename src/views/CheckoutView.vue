@@ -29,6 +29,7 @@ const form = reactive({
 const checkoutOrder = () => {
   if (!form.fullname || !form.email || !form.phone || !form.address) {
     alert('Please fill all required fields')
+    return
   }
 
   const body = {
@@ -45,8 +46,9 @@ const checkoutOrder = () => {
   cartStore.updateCart(cartDetail.value?.products)
   localStorage.removeItem('VUE_CART_VALUE')
 
-  const saveOrder = JSON.parse(localStorage.getItem('VUE_ORDER')) || []
+  let saveOrder = JSON.parse(localStorage.getItem('VUE_ORDER')) || []
   saveOrder.push(body)
+  localStorage.setItem('VUE_ORDER', JSON.stringify(saveOrder))
 
   toast.add({
     severity: 'success',
@@ -177,7 +179,7 @@ onMounted(() => {
                   <p>{{ formatCurrency(cartDetail?.shippingMethod?.cost) }}</p>
                 </div>
                 <div class="flex items-center justify-between">
-                  <p>estimatedDelivery</p>
+                  <p>Estimated delivery</p>
                   <p>{{ cartDetail?.shippingMethod?.estimatedDelivery }}</p>
                 </div>
               </div>
@@ -186,7 +188,7 @@ onMounted(() => {
             <Divider />
 
             <!-- Coupon code -->
-            <div class="flex flex-col gap-3">
+            <div v-if="cartDetail?.coupon" class="flex flex-col gap-3">
               <p class="text-lg font-medium">Coupon code</p>
 
               <div class="space-y-2">
