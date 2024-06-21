@@ -2,8 +2,10 @@
 import { RouterLink } from 'vue-router'
 import { useWishlistStore } from '@/store/wishlist'
 import { useCartStore } from '@/store/cart'
+import { useUserStore } from '@/store/user'
 const wishlistStore = useWishlistStore()
 const cartStore = useCartStore()
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -14,7 +16,25 @@ const cartStore = useCartStore()
       <div class="flex items-center gap-5">
         <RouterLink class="text-gray-800 font-semibold" to="/">Home</RouterLink>
         <RouterLink class="text-gray-800 font-semibold" to="/product">Products</RouterLink>
-        <RouterLink class="text-gray-800 font-semibold" to="/myorder">My Orders</RouterLink>
+
+        <RouterLink
+          v-if="!userStore.currentUser?.isLogin"
+          class="text-gray-800 font-semibold"
+          to="/login"
+          >Login</RouterLink
+        >
+        <RouterLink
+          v-if="userStore.currentUser?.isLogin"
+          class="text-gray-800 font-semibold"
+          to="/profile"
+          >Profile</RouterLink
+        >
+        <RouterLink
+          v-if="userStore.currentUser?.isLogin"
+          class="text-gray-800 font-semibold"
+          to="/myorder"
+          >My Orders</RouterLink
+        >
       </div>
 
       <div class="flex items-center gap-6">
