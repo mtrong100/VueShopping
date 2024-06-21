@@ -125,9 +125,9 @@ onMounted(() => {
         </div>
 
         <!-- Detail -->
-        <div class="bg-white px-5 rounded-sm shadow-sm p-5" style="border: 1px solid #dee2e6">
+        <div class="bg-white px-5 rounded-sm shadow-sm" style="border: 1px solid #dee2e6">
           <h2>Order details</h2>
-          <div class="mt-3">
+          <div>
             <DataTable
               dataKey="id"
               stripedRows
@@ -155,10 +155,10 @@ onMounted(() => {
             </DataTable>
           </div>
 
-          <Divider class="mb-4 mt-8" />
+          <Divider />
 
-          <div class="space-y-3">
-            <div class="text-lg mt-5 font-medium flex items-center justify-between">
+          <div>
+            <div class="text-lg font-medium flex items-center justify-between">
               <p>Subtotal</p>
               <p>{{ formatCurrency(cartDetail?.subTotal) }}</p>
             </div>
@@ -166,10 +166,10 @@ onMounted(() => {
             <Divider />
 
             <!-- Shipping -->
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col">
               <p class="text-lg font-medium">Shipping method</p>
 
-              <div class="space-y-2">
+              <div>
                 <div class="flex items-center justify-between">
                   <p>Name</p>
                   <p>{{ cartDetail?.shippingMethod?.name }}</p>
@@ -188,10 +188,10 @@ onMounted(() => {
             <Divider />
 
             <!-- Coupon code -->
-            <div v-if="cartDetail?.coupon" class="flex flex-col gap-3">
+            <div v-if="cartDetail?.coupon" class="flex flex-col">
               <p class="text-lg font-medium">Coupon code</p>
 
-              <div class="space-y-2">
+              <div>
                 <div class="flex items-center justify-between">
                   <p>Code</p>
                   <p>{{ cartDetail?.coupon?.code }}</p>
@@ -214,7 +214,7 @@ onMounted(() => {
 
           <Button
             @click="checkoutOrder"
-            class="w-full mt-5"
+            class="w-full mt-3"
             label="Place an order"
             severity="contrast"
             size="large"

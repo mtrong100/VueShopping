@@ -9,9 +9,9 @@ const userStore = useUserStore()
 </script>
 
 <template>
-  <header class="bg-slate-50 shadow-sm p-5">
+  <header class="bg-slate-50 shadow-sm">
     <div class="page-container flex items-center justify-between">
-      <h2>Shopping</h2>
+      <h2>VueStore</h2>
 
       <div class="flex items-center gap-5">
         <RouterLink class="text-gray-800 font-semibold" to="/">Home</RouterLink>

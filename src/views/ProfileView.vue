@@ -67,12 +67,11 @@ onMounted(() => {
       <h1>My profile</h1>
       <Toast />
 
-      <div class="w-full max-w-md mx-auto mt-5 space-y-5">
+      <div class="w-full max-w-md mx-auto space-y-5">
         <!-- Username -->
         <div class="flex flex-col gap-2">
           <label for="username">Username</label>
           <InputText
-            size="large"
             id="username"
             v-model="form.username"
             aria-describedby="username-help"
@@ -85,7 +84,6 @@ onMounted(() => {
           <label for="email">Email</label>
           <InputText
             type="email"
-            size="large"
             id="email"
             v-model="form.email"
             aria-describedby="email-help"
@@ -96,22 +94,16 @@ onMounted(() => {
         <!-- Address -->
         <div class="flex flex-col gap-2">
           <label for="address">Address</label>
-          <InputText
-            size="large"
-            id="address"
-            v-model="form.address"
-            aria-describedby="address-help"
-            required
-          />
+          <InputText id="address" v-model="form.address" aria-describedby="address-help" required />
         </div>
 
         <!-- Phone number -->
         <div class="flex flex-col gap-2">
           <label for="phone">Phone number</label>
-          <InputNumber size="large" v-model="form.phone" inputId="phone" required />
+          <InputNumber v-model="form.phone" inputId="phone" required />
         </div>
 
-        <Button @click="onUpdateProfile" class="w-full mt-5" label="Update profile" />
+        <Button @click="onUpdateProfile" class="w-full" label="Update profile" />
         <Button @click="onLogout" class="w-full" label="Log out" severity="contrast" />
       </div>
     </div>

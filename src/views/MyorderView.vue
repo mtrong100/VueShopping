@@ -59,7 +59,7 @@ onMounted(() => {
           </Column>
           <Column header="Action" :exportable="false" style="min-width: 8rem; text-align: center">
             <template #body="slotProps">
-              <Button label="View detail" raised @click="showModal(slotProps.data.orderId)" />
+              <Button icon="pi pi-eye" raised @click="showModal(slotProps.data.orderId)" />
             </template>
           </Column>
         </DataTable>
@@ -72,7 +72,7 @@ onMounted(() => {
         :style="{ width: '60rem' }"
         :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
       >
-        <div class="space-y-2">
+        <div>
           <div class="text-lg flex items-center justify-between">
             <p>Order ID</p>
             <p>{{ orderDetail?.orderId }}</p>
@@ -99,7 +99,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <Divider class="mb-4 mt-8" />
+        <Divider />
 
         <div>
           <DataTable
@@ -129,11 +129,11 @@ onMounted(() => {
           </DataTable>
         </div>
 
-        <Divider class="mb-4 mt-8" />
+        <Divider />
 
         <!-- Detail -->
-        <div class="space-y-3">
-          <div class="text-lg mt-5 font-medium flex items-center justify-between">
+        <div>
+          <div class="text-lg font-medium flex items-center justify-between">
             <p>Subtotal</p>
             <p>{{ formatCurrency(orderDetail?.subTotal) }}</p>
           </div>
@@ -141,10 +141,10 @@ onMounted(() => {
           <Divider />
 
           <!-- Shipping -->
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col">
             <p class="text-lg font-medium">Shipping method</p>
 
-            <div class="space-y-2">
+            <div>
               <div class="flex items-center justify-between">
                 <p>Name</p>
                 <p>{{ orderDetail?.shippingMethod?.name }}</p>
@@ -163,10 +163,10 @@ onMounted(() => {
           <Divider />
 
           <!-- Coupon code -->
-          <div v-if="orderDetail?.coupon" class="flex flex-col gap-3">
+          <div v-if="orderDetail?.coupon" class="flex flex-col">
             <p class="text-lg font-medium">Coupon code</p>
 
-            <div class="space-y-2">
+            <div>
               <div class="flex items-center justify-between">
                 <p>Code</p>
                 <p>{{ orderDetail?.coupon?.code }}</p>

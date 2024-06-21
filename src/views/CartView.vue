@@ -12,10 +12,12 @@ import Divider from 'primevue/divider'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+import { useUserStore } from '@/store/user'
 
 const router = useRouter()
 const toast = useToast()
 const cartStore = useCartStore()
+const userStore = useUserStore()
 
 const onRemoveProduct = (productId) => {
   cartStore.removeFromCart(productId)
@@ -30,6 +32,17 @@ const onDecrease = (productId) => {
 }
 
 const moveToCheckout = () => {
+  if (userStore.currentUser?.isLogin === false) {
+    toast.add({
+      severity: 'error',
+      summary: 'Please login first',
+      life: 1500
+    })
+
+    router.push('/login')
+    return
+  }
+
   if (cartStore.selectedProduct.length === 0) {
     toast.add({
       severity: 'error',
@@ -136,15 +149,15 @@ onMounted(() => {
         </div>
 
         <!-- Order summary -->
-        <div class="bg-white px-5 rounded-sm shadow-sm p-5" style="border: 1px solid #dee2e6">
+        <div class="bg-white rounded-sm shadow-sm p-5" style="border: 1px solid #dee2e6">
           <h2>Order summary</h2>
 
-          <div class="text-lg mt-5 font-medium flex items-center justify-between">
+          <div class="text-lg font-medium flex items-center justify-between">
             <p>Subtotal</p>
             <p>{{ formatCurrency(cartStore.subTotal) }}</p>
           </div>
 
-          <Divider class="my-4" />
+          <Divider />
 
           <div class="flex flex-col gap-3">
             <p class="text-lg font-medium mb-1">Shipping methods</p>
@@ -162,7 +175,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <Divider class="my-4" />
+          <Divider />
 
           <div>
             <p class="text-lg font-medium mb-2">Coupon code applied</p>
@@ -175,7 +188,7 @@ onMounted(() => {
             />
           </div>
 
-          <Divider class="my-4" />
+          <Divider />
 
           <div class="text-lg font-medium flex items-center justify-between">
             <p>Total</p>
@@ -184,7 +197,7 @@ onMounted(() => {
 
           <Button
             @click="moveToCheckout"
-            class="w-full mt-5"
+            class="w-full"
             label="Checkout"
             severity="contrast"
             size="large"
